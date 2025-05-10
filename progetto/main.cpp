@@ -70,7 +70,6 @@ int main()
             break;
 
 
-
     }
 
 
@@ -78,6 +77,7 @@ int main()
     menu();
     cout<< "Scelta: " ;
     cin>>op;
+
   }
 
 
