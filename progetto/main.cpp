@@ -1,8 +1,29 @@
 #include <iostream>
-
+#include <vector>
+#include <map>
 using namespace std;
 
+string namefile = "corsi_studenti.csv";
+
 // menù
+
+struct studente{
+
+    string nome, cognome, matr, cod_corso;
+
+};
+
+struct materia{
+
+    string cod_mat, desc_mat, cod_corso;
+
+};
+
+struct corso{
+
+    string cod_cors, decs_corso;
+
+};
 
 void menu(){
 
@@ -20,20 +41,26 @@ void menu(){
     cout<< "X. Esci" <<endl;
 }
 
+
 int main()
 {
 
   char op;
+  vector<studente>;
+  vector<materia>;
+  vector<corso>;
 
   menu();
   cout<< "Scelta: ";
-  cin>>op
+  cin>>op;
 
   while (op != 'X'){
 
     switch (op){
 
         case '1':
+
+            ins(namefile);
 
             break;
 
@@ -74,13 +101,12 @@ int main()
     }
 
 
-
     menu();
     cout<< "Scelta: " ;
     cin>>op;
   }
 
-
+  cout<<"Fine";
 
 
 }
