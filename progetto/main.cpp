@@ -81,6 +81,56 @@ void insVal(vector<studente>& stud, vector<materia>& mat, vector<corso>& cor){
 
 }
 
+ostream& operator<<(ostream& out, const studente& s) {
+    out << "Nome: " << s.nome << ", Cognome: " << s.cognome << ", Matricola: " << s.matr << ", Codice Corso: " << s.cod_corso;
+    return out;
+}
+
+ostream& operator<<(ostream& out, const materia& m) {
+    out << "Codice Materia: " << m.cod_mat << ", Descrizione: " << m.desc_mat << ", Codice Corso: " << m.cod_corso;
+    return out;
+}
+
+
+ostream& operator<<(ostream& out, const corso& c) {
+    out << "Codice Corso: " << c.cod_cors << ", Descrizione Corso: " << c.decs_corso;
+    return out;
+}
+
+string  matPerCorso (string m, vector<studente> stud, vector<corso> cor){
+
+    string cc; // codice corso
+    string dc; // descrizine corso
+
+    for (int i=0; i<stud.size(); i++){
+
+        if( stud[i].matr == m){
+
+            cc = stud[i].cod_corso;
+            break;
+        }
+    }
+
+    for (int i=0; i<cor.size(); i++){
+
+        if (cc == cor[i].cod_cors){
+
+            dc = cor[i].decs_corso;
+        }
+
+    }
+
+    if (dc != ""){
+
+        return dc;
+    }
+    else{
+
+        return "corso non trovato";
+    }
+
+}
+
 int main()
 {
 
@@ -88,6 +138,7 @@ int main()
   vector<studente> studenti;
   vector<materia> materie;
   vector<corso> corsi;
+  string mat;
 
   menu();
   cout<< "Scelta: ";
@@ -97,28 +148,38 @@ int main()
 
     switch (op){
 
-        case '1':
+        case '0':
 
             insVal(studenti, materie, corsi);
-/*
+
+/*            cout<<"studenti"<<endl;
             for (auto elem : studenti){
 
                 cout<<elem<<endl;
             }
 
             cout<<endl;
-
+            cout<<"materie"<<endl;
             for (auto elem1 : materie){
 
-                cout<<elem1<<<endl;
+                cout<<elem1<<endl;
             }
-
+            cout<<"corsi"<<endl;
             for (auto elem2 : corsi){
 
                 cout<<elem2<<endl;
 
             }
 */
+            break;
+
+        case '1':
+
+            cout<<"Inserisci la matricola"<<endl;
+            cin>>mat;
+
+            cout<<"Matricola "<< mat <<" : "<< matPerCorso(mat, studenti, corsi)<<endl;
+
             break;
 
         case '2':
@@ -149,13 +210,13 @@ int main()
 
             break;
 
-        case '9':
+         case '9':
 
             break;
 
-
     }
 
+    cout<<endl;
 
     menu();
     cout<< "Scelta: " ;

@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1747647970 source:c:\users\romanuccig\desktop\romanucci\pro-info\progetto\main.cpp
+	<iostream>
+	<fstream>
+	<vector>
+	<map>
+
