@@ -4,7 +4,8 @@
 #include <map>
 using namespace std;
 
-const string namefile = "corsi_studenti.csv";
+const string NAMEFILE = "corsi_studenti.csv";
+const char DEL = ',';
 
 struct studente{
 
@@ -24,6 +25,10 @@ struct corso{
 
 };
 
+map<string, vector<studente>> studenti;
+map<string, vector<materia>> materie;
+map<string, vector<corso>> corsi;
+
 // menù
 void menu(){
 
@@ -39,11 +44,12 @@ void menu(){
     cout<< "8. Inserisci un nuovo studente" <<endl;
     cout<< "9. Salva i dati su file" <<endl;
     cout<< "X. Esci" <<endl;
+    cout<< "=================================" <<endl;
 }
 
-void insVal(vector<studente>& stud, vector<materia>& mat, vector<corso>& cor){
+void insVal(){
 
-    ifstream fin(namefile);
+    ifstream fin(NAMEFILE);
 
     string labels;
     string cod_corso, dec_corso, cod_mat, dec_mat, matr, cog, nom;
@@ -52,28 +58,28 @@ void insVal(vector<studente>& stud, vector<materia>& mat, vector<corso>& cor){
 
     while(!fin.eof()){
 
-        getline(fin, cod_corso, ',');
+        getline(fin, cod_corso, DEL);
         if(cod_corso == "") break;
 
 
-        getline(fin, dec_corso, ',');
-        getline(fin, cod_mat, ',');
-        getline(fin, dec_mat, ',');
-        getline(fin, matr, ',');
-        getline(fin, cog, ',');
+        getline(fin, dec_corso, DEL);
+        getline(fin, cod_mat, DEL);
+        getline(fin, dec_mat, DEL);
+        getline(fin, matr, DEL);
+        getline(fin, cog, DEL);
         getline(fin, nom);
 
-        studente x = {nom, cog, matr, cod_corso};
 
-        stud.push_back(x);
+        studente x {nom, cog, matr, cod_corso};
+        studenti[cod_corso].push_back(x);
 
-        materia y = {cod_mat, dec_mat, cod_mat};
+        materia y {cod_mat, dec_mat, cod_corso};
+        materie[cod_corso].push_back(y);
 
-        mat.push_back(y);
+        corso z {cod_corso, dec_corso};
+        corsi[cod_corso].push_back(z);
 
-        corso z = {cod_corso, dec_corso};
 
-        cor.push_back(z);
 
     }
 
@@ -81,63 +87,12 @@ void insVal(vector<studente>& stud, vector<materia>& mat, vector<corso>& cor){
 
 }
 
-ostream& operator<<(ostream& out, const studente& s) {
-    out << "Nome: " << s.nome << ", Cognome: " << s.cognome << ", Matricola: " << s.matr << ", Codice Corso: " << s.cod_corso;
-    return out;
-}
-
-ostream& operator<<(ostream& out, const materia& m) {
-    out << "Codice Materia: " << m.cod_mat << ", Descrizione: " << m.desc_mat << ", Codice Corso: " << m.cod_corso;
-    return out;
-}
-
-
-ostream& operator<<(ostream& out, const corso& c) {
-    out << "Codice Corso: " << c.cod_cors << ", Descrizione Corso: " << c.decs_corso;
-    return out;
-}
-
-string  matPerCorso (string m, vector<studente> stud, vector<corso> cor){
-
-    string cc; // codice corso
-    string dc; // descrizine corso
-
-    for (int i=0; i<stud.size(); i++){
-
-        if( stud[i].matr == m){
-
-            cc = stud[i].cod_corso;
-            break;
-        }
-    }
-
-    for (int i=0; i<cor.size(); i++){
-
-        if (cc == cor[i].cod_cors){
-
-            dc = cor[i].decs_corso;
-        }
-
-    }
-
-    if (dc != ""){
-
-        return dc;
-    }
-    else{
-
-        return "corso non trovato";
-    }
-
-}
 
 int main()
 {
 
   char op;
-  vector<studente> studenti;
-  vector<materia> materie;
-  vector<corso> corsi;
+
   string mat;
 
   menu();
@@ -150,27 +105,10 @@ int main()
 
         case '0':
 
-            insVal(studenti, materie, corsi);
+            insVal();
 
-/*            cout<<"studenti"<<endl;
-            for (auto elem : studenti){
+            cout<<"Caricamento fatto!"<<endl;
 
-                cout<<elem<<endl;
-            }
-
-            cout<<endl;
-            cout<<"materie"<<endl;
-            for (auto elem1 : materie){
-
-                cout<<elem1<<endl;
-            }
-            cout<<"corsi"<<endl;
-            for (auto elem2 : corsi){
-
-                cout<<elem2<<endl;
-
-            }
-*/
             break;
 
         case '1':
@@ -178,7 +116,7 @@ int main()
             cout<<"Inserisci la matricola"<<endl;
             cin>>mat;
 
-            cout<<"Matricola "<< mat <<" : "<< matPerCorso(mat, studenti, corsi)<<endl;
+
 
             break;
 
