@@ -25,10 +25,6 @@ struct corso{
 
 };
 
-map<string, vector<studente>> studenti;
-map<string, vector<materia>> materie;
-map<string, vector<corso>> corsi;
-
 // menù
 void menu(){
 
@@ -47,7 +43,9 @@ void menu(){
     cout<< "=================================" <<endl;
 }
 
-void insVal(){
+//0
+
+void insVal(map<string, vector<studente>>& studenti, map<string, vector<materia>>& materie, map<string, vector<corso>>& corsi){
 
     ifstream fin(NAMEFILE);
 
@@ -79,21 +77,147 @@ void insVal(){
         corso z {cod_corso, dec_corso};
         corsi[cod_corso].push_back(z);
 
-
-
     }
 
     fin.close();
 
 }
 
+//1
+
+string corPerMat(map<string, vector<studente>> studenti, map<string, vector<corso>> corsi, string mat){
+
+    string ris;
+
+    map<string, string> matrPerCod;
+
+    for (auto &pair : studenti){
+
+        for (auto &s : pair.second){
+
+            if (s.matr == mat){
+
+               matrPerCod[mat] = s.cod_corso;
+               break;
+
+            }
+        }
+    }
+
+    for (auto &pair : corsi){
+
+        for (auto &c : pair.second){
+
+            if (c.cod_cors == matrPerCod[mat]){
+
+                ris = c.decs_corso;
+            }
+        }
+
+    }
+
+    if(ris != ""){
+        return ris;
+    }
+    else{
+        return "Matricola non trovata";
+    }
+
+}
+
+// 2
+
+string corPerCog (map<string, vector<studente>> studenti, map<string, vector<corso>> corsi, string cog){
+
+    string ris;
+
+    map<string, string> cognPerCod;
+
+    for (auto &pair : studenti){
+
+        for (auto &s : pair.second){
+
+            if (s.cognome == cog){
+
+               cognPerCod[cog] = s.cod_corso;
+               break;
+
+            }
+        }
+    }
+
+    for (auto &pair : corsi){
+
+        for (auto &c : pair.second){
+
+            if (c.cod_cors == cognPerCod[cog]){
+
+                ris = c.decs_corso;
+            }
+        }
+
+    }
+
+    if(ris != ""){
+        return ris;
+    }
+    else{
+        return "Matricola non trovata";
+    }
+
+
+}
+
+// 3
+
+void studPerCor (map<string, vector<studente>> studenti, map<string, vector<corso>> corsi, string cor){
+
+    string cc;
+
+    map<string, vector<studente>> studCor;
+    map<string, vector<studente>> ap;
+
+    for (auto &pair : corsi){
+
+        for (auto &c : pair.second){
+
+            if (c.cod_cors == cor){
+
+                cc = c.cod_cors;
+                break;
+            }
+        }
+
+    }
+
+    for (auto &pair : studenti){
+
+        for (auto &s : pair.second){
+
+             if (s.cod_corso == cc) {
+                studCor[cc].push_back(s);
+            }
+        }
+    }
+
+   for (auto &pair : studenti){
+
+        for (auto &s : pair.second){
+
+            cout<<"Corso "<<cor<<" ";cout<<"Studente "<<s.nome<<" "<<s.cognome<<endl;
+        }
+    }
+
+}
 
 int main()
 {
 
   char op;
-
-  string mat;
+  string mat, cog, cor;
+  map<string, vector<studente>> studenti;
+  map<string, vector<materia>> materie;
+  map<string, vector<corso>> corsi;
 
   menu();
   cout<< "Scelta: ";
@@ -105,7 +229,7 @@ int main()
 
         case '0':
 
-            insVal();
+            insVal(studenti, materie, corsi);
 
             cout<<"Caricamento fatto!"<<endl;
 
@@ -116,15 +240,25 @@ int main()
             cout<<"Inserisci la matricola"<<endl;
             cin>>mat;
 
-
+            cout<<"Matricola : "<<mat<<" Corso "<<corPerMat(studenti, corsi, mat)<<endl;
 
             break;
 
         case '2':
 
+            cout<<"Inserisci il cognome"<<endl;
+            cin>>cog;
+
+            cout<<"Cognome : "<<cog<<" Corso : "<<corPerCog(studenti, corsi, cog)<<endl;
+
             break;
 
         case '3':
+
+            cout<<"Inserici il corso"<<endl;
+            cin>>cor;
+
+            studPerCor(studenti, corsi, cor);
 
             break;
 
