@@ -37,8 +37,8 @@ void menu(){
     cout<< "5. Numero di studenti per corso" <<endl;
     cout<< "6. Numero di materie per corso" <<endl;
     cout<< "7. Cerca materie per descrizione" <<endl;
-    cout<< "8. Inserisci un nuovo studente" <<endl;
-    cout<< "9. Salva i dati su file" <<endl;
+    cout<< "8. Inserisci un nuovo studente" <<endl; // sullo stesso
+    cout<< "9. Salva i dati su file" <<endl; // sullo stesso
     cout<< "X. Esci" <<endl;
     cout<< "=================================" <<endl;
 }
@@ -117,9 +117,11 @@ string corPerMat(map<string, vector<studente>> studenti, map<string, vector<cors
     }
 
     if(ris != ""){
+
         return ris;
     }
     else{
+
         return "Matricola non trovata";
     }
 
@@ -159,9 +161,11 @@ string corPerCog (map<string, vector<studente>> studenti, map<string, vector<cor
     }
 
     if(ris != ""){
+
         return ris;
     }
     else{
+
         return "Matricola non trovata";
     }
 
@@ -170,42 +174,108 @@ string corPerCog (map<string, vector<studente>> studenti, map<string, vector<cor
 
 // 3
 
-void studPerCor (map<string, vector<studente>> studenti, map<string, vector<corso>> corsi, string cor){
+void studPerCor(map<string, vector<studente>> studenti, string cod) {
 
-    string cc;
+    map<string, studente> stuPerCor;
 
-    map<string, vector<studente>> studCor;
-    map<string, vector<studente>> ap;
+    if (studenti.find(cod) != studenti.end()) {
 
-    for (auto &pair : corsi){
+        for (auto &s : studenti[cod]) {
 
-        for (auto &c : pair.second){
+            stuPerCor[s.matr] = s;  // se uso la matricola i valori non si ripetono perchè magari l'ha già incontrata
 
-            if (c.cod_cors == cor){
+        }
 
-                cc = c.cod_cors;
-                break;
-            }
+        cout << "Studenti iscritti al corso " << cod <<endl;
+
+        for (auto &pair : stuPerCor) {
+
+            cout << pair.second.nome << " " << pair.second.cognome << endl;
+
+        }
+    }
+    else {
+
+        cout << "Nessun corso trovato con codice " << cod << endl;
+
+    }
+}
+
+// 4
+
+void esamPerCorso(map<string, vector<materia>> materie, string cod) {
+
+    map<string, materia> esamPerCor;
+
+    // Se il corso esiste nella mappa
+
+    if (materie.find(cod) != materie.end()) {
+
+        for (auto &m : materie[cod]) {
+
+            // Evita duplicati usando il codice materia come chiave
+            esamPerCor[m.cod_mat] = m;
+
+        }
+
+        cout << "Esami del corso " << cod <<endl;
+
+        for (auto &pair : esamPerCor) {
+
+            cout << pair.second.cod_mat << ": " << pair.second.desc_mat << endl;
         }
 
     }
+    else {
 
-    for (auto &pair : studenti){
+        cout << "Nessun corso trovato con codice " << cod << endl;
+    }
+}
 
-        for (auto &s : pair.second){
+// 5
 
-             if (s.cod_corso == cc) {
-                studCor[cc].push_back(s);
-            }
+void numStudPerCor(map<string, vector<studente>> studenti, string cod) {
+
+   map<string, studente> numeStud;
+
+   if (studenti.find(cod) != studenti.end()){
+
+        for(auto &s : studenti[cod]){
+
+            numeStud[s.matr] = s;
+
         }
+        cout<<"Il numero di studenti nel corso " << cod << " sono " << numeStud.size()<<endl;
+   }
+   else{
+
+        cout<<"Codice non trovato"<<endl;
+   }
+
+}
+
+// 6
+
+void numMatPerCor (map<string, vector<materia>> materie, string cod){
+
+    map<string, materia> numMat;
+
+
+    if (materie.find(cod) != materie.end()) {
+
+        for (auto &m : materie[cod]) {
+
+            // Evita duplicati usando il codice materia come chiave
+            numMat[m.cod_mat] = m;
+
+        }
+
+        cout<<"Il numero di materie del corso "<< cod <<" sono "<<numMat.size()<<endl;
     }
 
-   for (auto &pair : studenti){
+    else {
 
-        for (auto &s : pair.second){
-
-            cout<<"Corso "<<cor<<" ";cout<<"Studente "<<s.nome<<" "<<s.cognome<<endl;
-        }
+        cout << "Nessun corso trovato con codice " << cod << endl;
     }
 
 }
@@ -214,7 +284,7 @@ int main()
 {
 
   char op;
-  string mat, cog, cor;
+  string mat, cog, cod , cod1, cod2, cod3;
   map<string, vector<studente>> studenti;
   map<string, vector<materia>> materie;
   map<string, vector<corso>> corsi;
@@ -256,21 +326,36 @@ int main()
         case '3':
 
             cout<<"Inserici il corso"<<endl;
-            cin>>cor;
+            cin>>cod;
 
-            studPerCor(studenti, corsi, cor);
+            studPerCor(studenti, cod);
 
             break;
 
         case '4':
 
+            cout<<"Inserici il corso"<<endl;
+            cin>>cod1;
+
+            esamPerCorso(materie, cod1);
+
             break;
 
         case '5':
 
+            cout<<"Inserisci il corso"<<endl;
+            cin>>cod2;
+
+            numStudPerCor(studenti, cod2);
+
             break;
 
         case '6':
+
+            cout<<"Inserisci il corso"<<endl;
+            cin>>cod3;
+
+            numMatPerCor(materie, cod3);
 
             break;
 
@@ -297,6 +382,5 @@ int main()
   }
 
   cout<<"Fine";
-
 
 }
