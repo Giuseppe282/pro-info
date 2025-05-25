@@ -5,11 +5,13 @@
 	<vector>
 	<map>
 
-1747932235 source:c:\users\ciro\desktop\romanucci\pro-info\progetto\main.cpp
+1748099739 source:c:\users\ciro\desktop\romanucci\pro-info\progetto\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
 	<map>
+	<algorithm>
+	<set>
 
 1747816577 source:d:\users\romanuccig\desktop\romanucci\pro-info\progetto\main.cpp
 	<iostream>

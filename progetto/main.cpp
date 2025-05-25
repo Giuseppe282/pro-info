@@ -2,6 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <set>
 using namespace std;
 
 const string NAMEFILE = "corsi_studenti.csv";
@@ -45,7 +47,7 @@ void menu(){
 
 //0
 
-void insVal(map<string, vector<studente>>& studenti, map<string, vector<materia>>& materie, map<string, vector<corso>>& corsi){
+void insVal(map<string, vector<studente>>& studenti, map<string, vector<materia>>& materie, map<string, vector<corso>>& corsi, string &l){
 
     ifstream fin(NAMEFILE);
 
@@ -81,6 +83,7 @@ void insVal(map<string, vector<studente>>& studenti, map<string, vector<materia>
 
     fin.close();
 
+    l = labels;
 }
 
 //1
@@ -174,38 +177,26 @@ string corPerCog (map<string, vector<studente>> studenti, map<string, vector<cor
 
 // 3
 
-void studPerCor(map<string, vector<studente>> studenti, string cod) {
+map<string, studente> studPerCor(map<string, vector<studente>> studenti, string cod) {
 
-    map<string, studente> stuPerCor;
+    map<string, studente> ris;
 
     if (studenti.find(cod) != studenti.end()) {
 
         for (auto &s : studenti[cod]) {
 
-            stuPerCor[s.matr] = s;  // se uso la matricola i valori non si ripetono perchè magari l'ha già incontrata
-
-        }
-
-        cout << "Studenti iscritti al corso " << cod <<endl;
-
-        for (auto &pair : stuPerCor) {
-
-            cout << pair.second.nome << " " << pair.second.cognome << endl;
+            ris[s.matr] = s;  // se uso la matricola i valori non si ripetono perchè magari l'ha già incontrata
 
         }
     }
-    else {
-
-        cout << "Nessun corso trovato con codice " << cod << endl;
-
-    }
+    return ris;
 }
 
 // 4
 
-void esamPerCorso(map<string, vector<materia>> materie, string cod) {
+map<string, materia> esamPerCorso(map<string, vector<materia>> materie, string cod) {
 
-    map<string, materia> esamPerCor;
+    map<string, materia> ris;
 
     // Se il corso esiste nella mappa
 
@@ -214,28 +205,20 @@ void esamPerCorso(map<string, vector<materia>> materie, string cod) {
         for (auto &m : materie[cod]) {
 
             // Evita duplicati usando il codice materia come chiave
-            esamPerCor[m.cod_mat] = m;
+            ris[m.cod_mat] = m;
 
         }
 
-        cout << "Esami del corso " << cod <<endl;
-
-        for (auto &pair : esamPerCor) {
-
-            cout << pair.second.cod_mat << ": " << pair.second.desc_mat << endl;
-        }
-
     }
-    else {
+    return ris;
 
-        cout << "Nessun corso trovato con codice " << cod << endl;
-    }
 }
 
 // 5
 
-void numStudPerCor(map<string, vector<studente>> studenti, string cod) {
+int numStudPerCor(map<string, vector<studente>> studenti, string cod) {
 
+   int ris;
    map<string, studente> numeStud;
 
    if (studenti.find(cod) != studenti.end()){
@@ -245,19 +228,19 @@ void numStudPerCor(map<string, vector<studente>> studenti, string cod) {
             numeStud[s.matr] = s;
 
         }
-        cout<<"Il numero di studenti nel corso " << cod << " sono " << numeStud.size()<<endl;
    }
-   else{
 
-        cout<<"Codice non trovato"<<endl;
-   }
+   ris = numeStud.size();
+
+   return ris;
 
 }
 
 // 6
 
-void numMatPerCor (map<string, vector<materia>> materie, string cod){
+int numMatPerCor (map<string, vector<materia>> materie, string cod){
 
+    int ris;
     map<string, materia> numMat;
 
 
@@ -269,25 +252,108 @@ void numMatPerCor (map<string, vector<materia>> materie, string cod){
             numMat[m.cod_mat] = m;
 
         }
+    }
+    ris = numMat.size();
+    return ris;
+}
 
-        cout<<"Il numero di materie del corso "<< cod <<" sono "<<numMat.size()<<endl;
+// 7
+
+void matPerDesc (map<string, vector<materia>> materie, string s){
+
+    // Trasforma la stringa s in minuscolo
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+    set<string> stampati; // per evitare duplicati
+    bool trovato = false;
+
+    for (auto& pair : materie) {
+
+        for (auto& m : pair.second) {
+
+            string desc = m.desc_mat;
+            transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
+
+            if (desc.find(s) != string::npos) {
+
+                // Se non l'abbiamo già stampata
+                if (stampati.find(m.cod_mat) == stampati.end()) {
+
+                    cout << m.cod_mat << ": " << m.desc_mat << endl;
+                    stampati.insert(m.cod_mat);
+                    trovato = true;
+
+                }
+            }
+        }
     }
 
-    else {
+    if (!trovato) {
 
-        cout << "Nessun corso trovato con codice " << cod << endl;
+        cout << "Nessuna materia trovata con"<<" "<< s <<endl;
+
     }
+
+}
+
+// 8
+
+void insInStr (map<string, vector<studente>>& studenti, map<string, vector<materia>>& materi, map<string, vector<corso>>& corsi, string cod_cor, string des_cor, string cod_mat, string des_mat, string mat_stu, string cog_stu, string nome_stu){
+
+    corso c {cod_cor, des_cor};
+    corsi[cod_cor].push_back(c);
+
+    materia m {cod_mat, des_mat, cod_cor};
+    materi[cod_cor].push_back(m);
+
+    studente s {nome_stu, cog_stu, mat_stu, cod_cor};
+    studenti[cod_cor].push_back(s);
+
+}
+
+// 9
+
+void insInFile (map<string, vector<corso>> corsi, map<string, vector<materia>> materie, map<string, vector<studente>> studenti, string labels){
+
+     ofstream fout (NAMEFILE);
+
+    fout << labels << endl;
+
+    for (auto &pair : corsi) {
+        for (auto &c : pair.second) {
+            fout << c.cod_cors << DEL << c.decs_corso << endl;
+        }
+    }
+
+    for (auto &pair : materie) {
+        for (auto &m : pair.second) {
+            fout << m.cod_mat << DEL << m.desc_mat << endl;
+        }
+    }
+
+    for (auto &pair : studenti) {
+        for (auto &s : pair.second) {
+            fout << s.matr << DEL << s.cognome << DEL << s.nome << endl;
+        }
+    }
+
+
+    fout.close();
 
 }
 
 int main()
 {
-
+  int val, val1;
   char op;
-  string mat, cog, cod , cod1, cod2, cod3;
+  string mat, cog, cod , cod1, cod2, cod3, desc, labels;
+  string cod_cor,des_cor,cod_mat,des_mat,mat_stu,cog_stu,nome_stu;
   map<string, vector<studente>> studenti;
   map<string, vector<materia>> materie;
   map<string, vector<corso>> corsi;
+  map<string, studente> stuPerCor;
+  map<string, materia> esaPerCor;
+  map<string, materia> matDes;
 
   menu();
   cout<< "Scelta: ";
@@ -299,7 +365,7 @@ int main()
 
         case '0':
 
-            insVal(studenti, materie, corsi);
+            insVal(studenti, materie, corsi, labels);
 
             cout<<"Caricamento fatto!"<<endl;
 
@@ -328,7 +394,24 @@ int main()
             cout<<"Inserici il corso"<<endl;
             cin>>cod;
 
-            studPerCor(studenti, cod);
+            stuPerCor = studPerCor(studenti, cod);
+
+            if (stuPerCor.size() != 0){
+
+                cout << "Studenti iscritti al corso " << cod <<endl;
+
+                for (auto &pair : stuPerCor) {
+
+                cout << pair.second.nome << " " << pair.second.cognome << endl;
+
+            }
+
+            }
+            else{
+
+                cout<<"Corso non trovato"<<endl;
+
+            }
 
             break;
 
@@ -337,7 +420,24 @@ int main()
             cout<<"Inserici il corso"<<endl;
             cin>>cod1;
 
-            esamPerCorso(materie, cod1);
+            esaPerCor = esamPerCorso(materie, cod1);
+
+            if(esaPerCor.size() != 0){
+
+                cout << "Esami del corso " << cod <<endl;
+
+                for (auto &pair : esaPerCor) {
+
+                    cout << pair.second.cod_mat << ": " << pair.second.desc_mat << endl;
+                }
+
+            }
+
+            else{
+
+                cout<<"Corso non trovato"<<endl;
+
+            }
 
             break;
 
@@ -346,7 +446,18 @@ int main()
             cout<<"Inserisci il corso"<<endl;
             cin>>cod2;
 
-            numStudPerCor(studenti, cod2);
+            val = numStudPerCor(studenti, cod2);
+
+            if (val != 0){
+
+                cout<<"Il numero di studenti nel corso " << cod2 << " sono " << val <<endl;
+
+            }
+            else{
+
+                cout<<"Corso non trovato"<<endl;
+
+            }
 
             break;
 
@@ -355,19 +466,67 @@ int main()
             cout<<"Inserisci il corso"<<endl;
             cin>>cod3;
 
-            numMatPerCor(materie, cod3);
+            val1 = numMatPerCor(materie, cod3);
+
+            if (val1 != 0){
+
+                cout<<"Il numero di materie nel corso " << cod3 << " sono " << val1 <<endl;
+
+            }
+            else{
+
+                cout<<"Corso non trovato"<<endl;
+
+            }
 
             break;
 
         case '7':
 
+            cout<<"Inserisci il nome del corso"<<endl;
+            cin.ignore();
+            getline(cin, desc);
+
+            matPerDesc(materie, desc);
+
             break;
 
         case '8':
 
+            cod_cor,des_cor,cod_mat,des_mat,mat_stu,cog_stu,nome_stu;
+
+            cout<<"Ins. il codice corso"<<endl;
+            cin>>cod_cor;
+
+            cout<<"Ins. la descrizione del corso"<<endl;
+            cin>>des_cor;
+
+            cout<<"Ins. il codice materia"<<endl;
+            cin>>cod_mat;
+
+            cout<<"Ins. la descrizione della materia"<<endl;
+            cin>>des_mat;
+
+            cout<<"Ins. la tricola dello studente"<<endl;
+            cin>>mat_stu;
+
+            cout<<"Ins. il cognome dello studente"<<endl;
+            cin>>cog_stu;
+
+            cout<<"Inserisci il nome dello studente"<<endl;
+            cin>>nome_stu;
+
+            insInStr(studenti, materie, corsi, cod_cor, des_cor, cod_mat, des_mat, mat_stu, cog_stu, nome_stu);
+
             break;
 
          case '9':
+
+             insInFile(corsi, materie, studenti, labels);
+
+             cout<<endl;
+
+             cout<<"Informazioni aggiunte"<<endl;
 
             break;
 
