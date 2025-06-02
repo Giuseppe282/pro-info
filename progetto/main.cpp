@@ -208,6 +208,6 @@ int main()
 
   }
 
-  cout<<"Fine";
+  cout<<"Fine del programma!";
 
 }
