@@ -232,13 +232,12 @@ int numMatPerCor (map<string, vector<materia>> materie, string cod){
 
 // 7
 
-void matPerDesc (map<string, vector<materia>> materie, string s){
+set<string> matPerDesc(map<string, vector<materia>> materie, string s) {
 
     // Trasforma la stringa s in minuscolo
     transform(s.begin(), s.end(), s.begin(), ::tolower);
 
     set<string> stampati; // per evitare duplicati
-    bool trovato = false;
 
     for (auto& pair : materie) {
 
@@ -248,26 +247,14 @@ void matPerDesc (map<string, vector<materia>> materie, string s){
             transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
 
             if (desc.find(s) != string::npos) {
-
-                // Se non l'abbiamo già stampata
-                if (stampati.find(m.cod_mat) == stampati.end()) {
-
-                    cout << m.cod_mat << ": " << m.desc_mat << endl;
-                    stampati.insert(m.cod_mat);
-                    trovato = true;
-
-                }
+                stampati.insert(m.desc_mat);
             }
         }
     }
 
-    if (!trovato) {
-
-        cout << "Nessuna materia trovata con"<<" "<< s <<endl;
-
-    }
-
+    return stampati;
 }
+
 
 // 8
 

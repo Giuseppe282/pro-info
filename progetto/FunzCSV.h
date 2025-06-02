@@ -24,10 +24,6 @@ struct corso{
     string cod_cors, decs_corso;
 };
 
-struct Iscrizione {
-    string cod_corso, desc_corso, cod_materia, desc_materia, matr, cognome, nome;
-};
-
 void menu();
 
 void insVal(map<string, vector<studente>>& studenti, map<string, vector<materia>>& materie, map<string, vector<corso>>& corsi, string &l);
@@ -44,7 +40,7 @@ int numStudPerCor(map<string, vector<studente>> studenti, string cod);
 
 int numMatPerCor (map<string, vector<materia>> materie, string cod);
 
-void matPerDesc (map<string, vector<materia>> materie, string s);
+set<string> matPerDesc (map<string, vector<materia>> materie, string s);
 
 void insInStr(map<string, vector<studente>>& studenti, map<string, vector<materia>>& materie, string cod_mat, string matr, string cognome, string nome);
 

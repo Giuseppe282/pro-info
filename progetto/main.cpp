@@ -13,6 +13,7 @@ int main()
   map<string, studente> stuPerCor;
   map<string, materia> esaPerCor;
   map<string, materia> matDes;
+  set<string> matDesc;
 
   menu();
   cout<< "Scelta: ";
@@ -25,6 +26,8 @@ int main()
         case '0':
 
             insVal(studenti, materie, corsi, labels);
+
+            cout<<endl;
 
             cout<<"Caricamento fatto!"<<endl;
 
@@ -112,6 +115,7 @@ int main()
                 cout<<"Il numero di studenti nel corso " << cod2 << " sono " << val <<endl;
 
             }
+
             else{
 
                 cout<<"Corso non trovato"<<endl;
@@ -142,11 +146,27 @@ int main()
 
         case '7':
 
-            cout<<"Inserisci il nome del corso"<<endl;
+            cout<<"Inserisci una stringa"<<endl;
             cin.ignore();
             getline(cin, desc);
 
-            matPerDesc(materie, desc);
+            matDesc = matPerDesc(materie, desc);
+
+            cout<<endl;
+
+            if (matDesc.size() != 0){
+
+               for (auto& elem : matDesc){
+
+                    cout<<elem<<endl;
+               }
+
+               matDesc.clear();
+
+            }
+            else{
+                cout<<"Nessuna stringa trovata"<<endl;
+            }
 
             break;
 
